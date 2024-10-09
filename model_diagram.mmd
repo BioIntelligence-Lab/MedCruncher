@@ -1,0 +1,45 @@
+flowchart TD
+    subgraph Pre ["Preprocessing"]
+        direction TB
+        A[Input: Excel Data] --> B[Patient Diagnosis Text]
+        A --> C[Label Matrix]
+        B --> D[Text Embedding]
+        D -->|all-MiniLM-L12-v2| E[Embedded Text]
+    end
+
+    subgraph Mod ["Model Training & Prediction"]
+        direction TB
+        F[SVM Models]
+        G[Binary Classifications]
+        F -->|One SVM per label| G
+    end
+
+    subgraph Sel ["Model Selection"]
+        direction TB
+        I[Hyperparameter Tuning]
+    end
+
+    subgraph Eval ["Performance Evaluation"]
+        direction TB
+        J[Evaluation Metrics]
+        K[Accuracy]
+        L[Sensitivity]
+        M[Specificity]
+        N[Time]
+        J --> K & L & M & N
+    end
+
+    Pre --> Mod
+    Sel --> Mod
+    Mod --> Eval
+
+    %% External connections
+    E --> F
+    C --> F
+    G --> H[Output: Label Matrix]
+    H --> J
+    I -->|K-fold CV| F
+
+    %% Styling
+    classDef subgraphStyle fill:#f0f0f0,stroke:#333,stroke-width:2px;
+    class Pre,Mod,Sel,Eval subgraphStyle;
